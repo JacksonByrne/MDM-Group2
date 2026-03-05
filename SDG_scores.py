@@ -174,10 +174,22 @@ def add_goal_scores(df: pd.DataFrame) -> pd.DataFrame:
 Only added easily quantifiable goals (1, 2, 3, 4, 5, 7, 8, 9, 10) 
 since they have more data and are more comparable across countries. 
 Missing data for some goals from the spreadsheet, so have to find ourselves.
-
 '''
 
 df_scored = add_goal_scores(df)
+goal_labels = {
+    "Goal1":  "No Poverty",
+    "Goal2":  "Zero Hunger",
+    "Goal3":  "Good Health",
+    "Goal4":  "Quality Education",
+    "Goal5":  "Gender Equality",
+    "Goal7":  "Clean Energy",
+    "Goal8":  "Decent Work",
+    "Goal9":  "Industry & Infra",
+    "Goal10": "Reduced Inequalities",
+    "Goal13": "Climate Action",
+}
+
 
 def plot_country_score_single(country, year):
     row = df_scored[
@@ -191,7 +203,7 @@ def plot_country_score_single(country, year):
         "Goal8_score", "Goal9_score", "Goal10_score",
     ]
 
-    labels = [c.replace("_score", "") for c in goal_cols]
+    labels = [goal_labels[c.replace("_score", "")] for c in goal_cols]
     values = row[goal_cols].values
 
     plt.figure()
@@ -215,9 +227,12 @@ def plot_country_scores_over_time(country, start, end, goal):
 
     plt.figure()
     plt.plot(sub["Year"], sub[goal], marker="o")
-    plt.ylabel(f"{goal.replace('_score', '')} score (0–1)")
     plt.xlabel("Year")
-    plt.title(f"{goal.replace('_score', '')} score over time: {country} ({start}–{end})")
+    goal_code = goal.replace("_score", "")          # e.g. "Goal5"
+    goal_name = goal_labels.get(goal_code, goal_code)
+
+    plt.ylabel(f"{goal_name} score (0–1)")
+    plt.title(f"{goal_name} score over time: {country} ({start}–{end})")
     plt.ylim(0, 1)
     plt.grid(True)
     plt.tight_layout()
@@ -252,8 +267,11 @@ def plot_all_countries_2004_2015_lines(df, goal):
         )
 
     plt.xlabel("Year")
-    plt.ylabel(f"{goal.replace('_score', '')} score (0–1)")
-    plt.title(f"{goal.replace('_score', '')} scores by country (2004–2015)")
+    goal_code = goal.replace("_score", "")
+    goal_name = goal_labels.get(goal_code, goal_code)
+
+    plt.ylabel(f"{goal_name} score (0–1)")
+    plt.title(f"{goal_name} scores by country (2004–2015)")
     plt.ylim(0, 1)
     plt.grid(True, alpha=0.3)
 
@@ -269,11 +287,11 @@ def main():
     year = 2015
     start_year = 2000
     end_year = 2018
-    goal = 'Goal1_score'
+    goal = 'Goal3_score'
     (1, 2, 3, 4, 5, 7, 8, 9, 10, 13) 
 
     '''plot_country_score_single(country, year)'''
-    '''plot_country_scores_over_time(country, start_year, end_year, goal)'''
+    plot_country_scores_over_time(country, start_year, end_year, goal)
     plot_all_countries_2004_2015_lines(df, goal)
 
 main()
