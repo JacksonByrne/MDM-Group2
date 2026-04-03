@@ -283,11 +283,11 @@ def plot_all_countries_2004_2015_lines(df, goal):
 
 
 def main():
-    country = "United Arab Emirates"
+    country = "Australia"
     year = 2015
     start_year = 2000
     end_year = 2018
-    goal = 'Goal3_score'
+    goal = 'Goal1_score'
     (1, 2, 3, 4, 5, 7, 8, 9, 10, 13) 
 
     '''plot_country_score_single(country, year)'''
@@ -295,3 +295,8 @@ def main():
     plot_all_countries_2004_2015_lines(df, goal)
 
 main()
+
+'''
+Improve scores based on literature
+
+'''
