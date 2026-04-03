@@ -133,7 +133,7 @@ for goal in goals:
 
 # different plots to just show what the data now looks like
 # plot each goal for a specific country
-country='United Kingdom'
+'''country='United Kingdom'
 for goal in goals:
     plot_country_metric(country, f'Composite Index {goal}',df, goal_labels)
 plt.ylabel('Composite Index')
@@ -147,9 +147,13 @@ for country in countries[0]:
     sns.lineplot(country_metric(country, f'Composite Index {goal}',df), x='Year',y=f'Composite Index {goal}', label=country)
     plt.ylim(0,1)
     plt.title(f'{goal_labels[goal]} over time')
-plt.show()
+plt.show()'''
 
 def country_goal_data(country, goal, df):
+    '''
+    country : 'United Kingdom'
+    goal    : 'Goal1', 'Goal7'
+    '''
     metric = f'Composite Index {goal}'
     country_df = df[df['Country Name'] == country]
     return country_df[['Year', metric]]
