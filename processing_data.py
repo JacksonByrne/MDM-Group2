@@ -157,7 +157,16 @@ def country_goal_data(country, goal, df):
     metric = f'Composite Index {goal}'
     country_df = df[df['Country Name'] == country]
     return country_df[['Year', metric]]
+
+def goal_metric_data(countries, goal, df):
+    '''
+    countries : list of country names
+    goal    : 'Goal1', 'Goal7'
+    '''
+    metric = f'Composite Index {goal}'
+    filtered_df = df[df['Country Name'].isin(countries)]
+    return filtered_df[['Country Name', 'Year', metric]].sort_values(['Country Name', 'Year'])
 '''
-Added a function to call for dynamic time warping for me!
+Added functions to call for dynamic time warping for me!
 Can be called through importing
 '''
