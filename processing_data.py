@@ -148,3 +148,12 @@ for country in countries[0]:
     plt.ylim(0,1)
     plt.title(f'{goal_labels[goal]} over time')
 plt.show()
+
+def country_goal_data(country, goal, df):
+    metric = f'Composite Index {goal}'
+    country_df = df[df['Country Name'] == country]
+    return country_df[['Year', metric]]
+'''
+Added a function to call for dynamic time warping for me!
+Can be called through importing
+'''
