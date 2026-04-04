@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 # read data set
-data=pd.read_csv('WorldSustainabilityDataset.csv')
+data=pd.read_csv('archive/WorldSustainabilityDataset.csv')
 # get list of countries
 list_of_countries=list(set(data['Country Name']))
 def country_metric(country, metric,df):
