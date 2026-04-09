@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 # read data set
-data=pd.read_csv('WorldSustainabilityDataset.csv')
+data=pd.read_csv('test_table.csv')
 # get list of countries
 list_of_countries=list(set(data['Country Name']))
 def country_metric(country, metric,df):
@@ -35,13 +35,10 @@ def metric_plot():
 def norm_columns(df, data):
     # Creates a new updated dataframe where the values have been normalised, i.e put the values between 0 and 1 bases on means and standard deviations
     # add list of metrics here only ones with numerical values, that can be normalised
-    metrics=data.columns.values[3:43]
-    metrics=np.append(metrics,data.columns.values[44])
-    metrics=np.append(metrics,data.columns.values[46:49])
-    metrics=np.append(metrics,data.columns.values[50:53])
-    # create array of indexs showing if a metric is good to be low or high, needs to be updated 
-    lower_values_good=[3,4,5,6,9,21,24,32,33,37,38,39,40]
-    years=np.linspace(2000,2018,19)
+    metrics=data.columns.values[3:]
+    # create array of indexs showing if a metric is good to be low or high
+    lower_values_good=[2,4,7,9,13,17,18,22,23,26,27,30,32,37,40,42,45,46,47,48,51,52,53,54,55,60,62,63,64,65,71,72]
+    years=np.linspace(2002,2023,23)
     # loop through each metric
     for i,metric in enumerate(metrics):
         # get min and max values of metric
@@ -50,7 +47,6 @@ def norm_columns(df, data):
         # loop through each year calculating normalised value for each country for metric and updating the dataframe
         for year in years:
             year_values=(df[df['Year']==int(year)][metric])
-            # normalise values 
             norm_score=(year_values-min)/(max-min)
             # if lower value is better change the normilisation score
             if i in lower_values_good:
@@ -72,82 +68,150 @@ goal_labels = {
     "Goal8":  "Decent Work and Economic Growth",
     "Goal9":  "Industry, Innovation & Infrastructure",
     "Goal10": "Reduced Inequalities",
+    "Goal11": "Sustainable Cities and Communities",
     "Goal13": "Climate Action",
+    "Goal15": "Life on Land",
+    "Goal16": "Peace, Justice and Strong Institutions",
+    "Goal17": "Partnerships for the Goals"
 }
 # normalise columns
-norm_columns(df,data)
 
 # list of goals and the metrics used for them
 goal_metrics_labels = {
     # No Poverty
-    "Goal1":  ["Proportion of population below international poverty line (%) - SI_POV_DAY1 - 1.1.1"],
+    "Goal1":  ["Poverty headcount ratio at $1.90 a day (2011 PPP) (% of population)",
+    "Poverty gap at $5.50 a day (2011 PPP) (% of population)",
+    "Poverty headcount ratio at national poverty lines (% of population)",
+    "Adequacy of social protection and labor programs (% of total welfare of beneficiary households)",
+    "Poverty gap at $1.90 a day (2011 PPP) (%)"
+    ],
     # Zero Hunger 
-    "Goal2":  ["Prevalence of undernourishment (%) - SN_ITK_DEFC - 2.1.1"],
+    "Goal2":  ["Prevalence of undernourishment (% of population)",
+    "Cereal yield (kg per hectare)",
+    "Prevalence of stunting, height for age (% of children under 5)",
+    "Agricultural land (% of land area)",
+    "Food production index (2004-2006 = 100)"
+    ],
     # Good Health
-    "Goal3":  ["Life expectancy at birth, total (years) - SP.DYN.LE00.IN"],
+    "Goal3":  ["Mortality rate, under-5 (per 1,000 live births)",
+    "Life expectancy at birth, total (years)",
+    "Maternal mortality ratio (modeled estimate, per 100,000 live births)",
+    "Incidence of tuberculosis (per 100,000 people)",
+    "Current health expenditure (% of GDP)"
+    ],
     # Quality Education 
-    "Goal4":  ["Children out of school (% of primary school age) - SE.PRM.UNER.ZS",
-    "Compulsory education, duration (years) - SE.COM.DURS",
-    "Primary completion rate, total (% of relevant age group) - SE.PRM.CMPT.ZS",
-    "School enrollment, preprimary (% gross) - SE.PRE.ENRR",
-    "School enrollment, primary (% gross) - SE.PRM.ENRR",
-    "School enrollment, secondary (% gross) - SE.SEC.ENRR",
-    "Pupil-teacher ratio, primary - SE.PRM.ENRL.TC.ZS"],
+    "Goal4":  ["School enrollment, primary (% gross)",
+    "Literacy rate, adult total (% of people ages 15 and above)",
+    "Children out of school (% of primary school age)",
+    "Government expenditure on education, total (% of GDP) [SE.XPD.TOTL.GD.ZS]",
+    "Compulsory education, duration (years)"
+    ],
     # Gender equality 
-    "Goal5":  ["Proportion of seats held by women in national parliaments (%) - SG.GEN.PARL.ZS",
-    "Women Business and the Law Index Score (scale 1-100) - SG.LAW.INDX"],
+    "Goal5":  ["Proportion of seats held by women in national parliaments (%)",
+    "Ratio of female to male labor force participation rate (%) (modeled ILO estimate)",
+    "Women who were first married by age 18 (% of women ages 20-24)",
+    "Proportion of women subjected to physical and/or sexual violence in the last 12 months (% of women age 15-49)",
+    "School enrollment, primary (% gross)"
+    ],
     # Clean water
-    "Goal6":  ["Proportion of population using basic drinking water services (%) - SP_ACS_BSRVH2O - 1.4.1"],
+    "Goal6":  ["People using basic drinking water services (% of population)",
+    "People using basic sanitation services (% of population)",
+    "Annual freshwater withdrawals, total (% of internal resources)",
+    "People practicing open defecation (% of population)",
+    "Water pollution, food industry (% of total BOD emissions) [EE.BOD.FOOD.ZS]"
+    ],
     # Clean Energy
-    "Goal7":  ["Access to electricity (% of population) - EG.ELC.ACCS.ZS",
-    "Renewable electricity output (% of total electricity output) - EG.ELC.RNEW.ZS",
-    "Renewable energy consumption (% of total final energy consumption) - EG.FEC.RNEW.ZS"],
+    "Goal7":  ["Access to electricity (% of population)",
+    "Renewable energy consumption (% of total final energy consumption)",
+    "Energy intensity level of primary energy (MJ/$2011 PPP GDP)",
+    "Carbon dioxide (CO2) emissions from Power Industry (Energy) (Mt CO2e)",
+    "Access to clean fuels and technologies for cooking  (% of population)"
+    ],
     # Decent Work and Economic Growth
-    "Goal8":  ["Adjusted net national income per capita (annual % growth) - NY.ADJ.NNTY.PC.KD.ZG",
-    "Inflation, consumer prices (annual %) - FP.CPI.TOTL.ZG",
-    "Unemployment rate, male (%) - SL_TLF_UEM - 8.5.2",
-    "Unemployment rate, women (%) - SL_TLF_UEM - 8.5.2"],
+    "Goal8":  ["GDP growth (annual %)",
+    "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+    "GDP per person employed (constant 2011 PPP $)",
+    "Children in employment, total (% of children ages 7-14)",
+    "Labor force participation rate, total (% of total population ages 15-64) (modeled ILO estimate)"
+    ],
     # Industry,Innovation and Infrastructure
-    "Goal9":  ["Automated teller machines (ATMs) (per 100,000 adults) - FB.ATM.TOTL.P5",
-    "Individuals using the Internet (% of population) - IT.NET.USER.ZS",
-    "Proportion of population covered by at least a 2G mobile network (%) - IT_MOB_2GNTWK - 9.c.1",
-    "Proportion of population covered by at least a 3G mobile network (%) - IT_MOB_3GNTWK - 9.c.1"],
+    "Goal9":  ["Fixed broadband subscriptions (per 100 people)",
+    "Research and development expenditure (% of GDP)",
+    "Manufacturing, value added (% of GDP)",
+    "Logistics performance index: Overall (1=low to 5=high)",
+    "Patent applications, residents"
+    ],
     # Requced Inequalities 
-    "Goal10": ["Gini index (World Bank estimate) - SI.POV.GINI"],
+    "Goal10": ["GINI index (World Bank estimate)",
+    "Income share held by lowest 20%",
+    "Poverty gap at $1.90 a day (2011 PPP) (%)"
+    ],
+    # Sustainable cities
+    "Goal11":["PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
+    "People using safely managed drinking water services, urban (% of urban population)",
+    "Disaster risk reduction progress score (1-5 scale; 5=best)"
+    ],
     # Climate Action 
-    "Goal13": ["Adjusted net savings, excluding particulate emission damage (% of GNI) - NY.ADJ.SVNX.GN.ZS",
-    "Adjusted savings: carbon dioxide damage (% of GNI) - NY.ADJ.DCO2.GN.ZS",
-    "Adjusted savings: natural resources depletion (% of GNI) - NY.ADJ.DRES.GN.ZS",
-    "Adjusted savings: net forest depletion (% of GNI) - NY.ADJ.DFOR.GN.ZS",
-    "Adjusted savings: particulate emission damage (% of GNI) - NY.ADJ.DPEM.GN.ZS"],
+    "Goal13": ["Carbon dioxide (CO2) emissions (total) excluding LULUCF (Mt CO2e)",
+    "Carbon dioxide (CO2) emissions excluding LULUCF per capita (t CO2e/capita)",
+    "Adjusted savings: carbon dioxide damage (% of GNI)",
+    "Carbon intensity of GDP (kg CO2e per constant 2015 US$ of GDP)",
+    "Total greenhouse gas emissions (kt of CO2 equivalent) [EN.ATM.GHGT.KT.CE]"
+    ],
+    # Life on Land
+    "Goal15":["Forest area (% of land area)",
+    "Terrestrial and marine protected areas (% of total territorial area)",
+    "Bird species, threatened",
+    "Mammal species, threatened",
+    "Adjusted savings: net forest depletion (% of GNI)"
+    ],
+    # peace, justice
+    "Goal16":["Battle-related deaths (number of people)",
+    "Intentional homicides (per 100,000 people)",
+    "Statistical performance indicators (SPI): Overall score (scale 0-100)",
+    "Rule of Law: Estimate",
+    "Control of Corruption: Estimate"
+    ],
+    # paternships for goals 
+    'Goal17':["Net official development assistance received (current US$)",
+    "Tariff rate, applied, simple mean, all products (%)",
+    "Foreign direct investment, net inflows (% of GDP)",
+    "Personal remittances, received (% of GDP)",
+    "Net official development assistance and official aid received (current US$) [DT.ODA.ALLD.CD]"
+    ],
+
 }
+norm_columns(df,data)
 # loop through each goal and caluclate a mean for all of the metrics to get a composite index for each country for each year for that goal
 goals=goal_metrics_labels.keys()
+
 for goal in goals:
     metrics_for_goal=goal_metrics_labels[goal]
     # creates a new mean which is the composite index of the two goals
     # decide how to combine metrics? For now just used standard mean. Could use median, have weight for specific goals
     # add column to dataframe for each composite index
     df[f'Composite Index {goal}'] = df[metrics_for_goal].mean(axis=1)
-
-
 # different plots to just show what the data now looks like
 # plot each goal for a specific country
-'''country='United Kingdom'
+'''
+country='United Kingdom'
 for goal in goals:
     plot_country_metric(country, f'Composite Index {goal}',df, goal_labels)
 plt.ylabel('Composite Index')
 plt.title(f'Goals for {country} over time')
 plt.legend(loc='upper left')
+plt.xlim(2001,2024)
 plt.show()
 # plot a specific goal for multiple countries
 countries=[list_of_countries[:10]]
-goal='Goal7'
+goal='Goal16'
 for country in countries[0]:
     sns.lineplot(country_metric(country, f'Composite Index {goal}',df), x='Year',y=f'Composite Index {goal}', label=country)
     plt.ylim(0,1)
     plt.title(f'{goal_labels[goal]} over time')
-plt.show()'''
+    plt.xlim(2001,2024)
+plt.show()
+'''
 
 def country_goal_data(country, goal, df):
     '''
