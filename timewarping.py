@@ -5,9 +5,8 @@ import seaborn as sns
 import processing_data
 from processing_data import df, country_goal_data, goal_metric_data
 
-
-uk_goal1 = country_goal_data('United Kingdom', 'Goal7', df)
-
+df=df
+cleandf = df.dropna(subset=['Composite Index Goal1'])
 countries = [
     'Aruba',
     'Angola',
@@ -184,3 +183,59 @@ countries = [
     'Zimbabwe',
 ]
 
+def dtw_between_countries(country1, country2, goal):
+    def dtw_distance(s, t, dist_func=None):
+        """
+        s, t: 1D numpy arrays
+        dist_func: function(x, y) -> cost, default |x - y|
+        """
+        if dist_func is None:
+            dist_func = lambda x, y: abs(x - y)
+
+        n, m = len(s), len(t)
+        DTW = np.full((n + 1, m + 1), np.inf)
+        DTW[0, 0] = 0.0
+
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+                cost = dist_func(s[i - 1], t[j - 1])
+                DTW[i, j] = cost + min(
+                    DTW[i - 1, j],     # insertion
+                    DTW[i, j - 1],     # deletion
+                    DTW[i - 1, j - 1]  # match
+                )
+
+        return DTW[n, m]
+
+    def country_goal_series(country, goal, df, drop_na=True):
+        sub = country_goal_data(country, goal, df).sort_values('Year')
+        if drop_na:
+            sub = sub.dropna()
+        years = sub['Year'].to_numpy()
+        values = sub[f'Composite Index {goal}'].to_numpy(dtype=float)
+        return years, values
+
+    def aligned_goal_series_two_countries(country1, country2, goal, df):
+        years1, s1 = country_goal_series(country1, goal, df)
+        years2, s2 = country_goal_series(country2, goal, df)
+
+        common_years = np.intersect1d(years1, years2)
+        s1_aligned = s1[np.isin(years1, common_years)]
+        s2_aligned = s2[np.isin(years2, common_years)]
+
+        return common_years, s1_aligned, s2_aligned
+    
+    years, s, t = aligned_goal_series_two_countries(country1, country2, goal, df)
+    distance = dtw_distance(s, t)
+    return distance, years, s, t
+
+
+
+dist, years, one_vals, two_vals = dtw_between_countries(
+    "Argentina",
+    "United States",
+    "Goal5"
+    )
+
+print("DTW distance Goal5 (UK vs US):", dist)
+print("Aligned years:", years)
