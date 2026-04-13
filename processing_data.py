@@ -184,7 +184,7 @@ goal_metrics_labels = {
 norm_columns(df,data)
 # loop through each goal and caluclate a mean for all of the metrics to get a composite index for each country for each year for that goal
 goals=goal_metrics_labels.keys()
-
+goals_columns=[f'Composite Index {goal}' for goal in goals]
 for goal in goals:
     metrics_for_goal=goal_metrics_labels[goal]
     # creates a new mean which is the composite index of the two goals
@@ -193,6 +193,8 @@ for goal in goals:
     df[f'Composite Index {goal}'] = df[metrics_for_goal].mean(axis=1)
 # different plots to just show what the data now looks like
 # plot each goal for a specific country
+df['Goal index']=df[goals_columns].mean(axis=1)
+print(df.head())
 '''
 country='United Kingdom'
 for goal in goals:
@@ -202,16 +204,34 @@ plt.title(f'Goals for {country} over time')
 plt.legend(loc='upper left')
 plt.xlim(2001,2024)
 plt.show()
-# plot a specific goal for multiple countries
-countries=[list_of_countries[:10]]
-goal='Goal16'
-for country in countries[0]:
-    sns.lineplot(country_metric(country, f'Composite Index {goal}',df), x='Year',y=f'Composite Index {goal}', label=country)
+'''
+# get countries with biggest change in last 10 years
+df_start=df[df['Year']==2005]
+df_end=df[df['Year']==2022]
+# change in composite index between 2002 and 2023
+change=df_end['Goal index'].to_numpy()-df_start['Goal index'].to_numpy()
+
+# get 10 smallest and 10 biggest changes
+max_indeces=np.argsort(change)[-10:]
+min_indeces=np.argsort(change)[:10]
+print(change[max_indeces])
+# find these countries and plot the composite index over time
+countries=np.array(list(dict.fromkeys(df['Country Name'].to_numpy())))
+biggest_change_countries=countries[max_indeces]
+smallest_change_countries=countries[min_indeces]
+for country in biggest_change_countries:
+    sns.lineplot(country_metric(country,'Goal index',df), x='Year',y='Goal index', label=country)
     plt.ylim(0,1)
-    plt.title(f'{goal_labels[goal]} over time')
+    plt.title('Composite index over time')
     plt.xlim(2001,2024)
 plt.show()
-'''
+for country in smallest_change_countries:
+    sns.lineplot(country_metric(country,'Goal index',df), x='Year',y='Goal index', label=country)
+    plt.ylim(0,1)
+    plt.title('Composite index over time')
+    plt.xlim(2001,2024)
+plt.show()
+
 
 def country_goal_data(country, goal, df):
     '''
