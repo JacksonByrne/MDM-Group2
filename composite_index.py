@@ -198,7 +198,7 @@ def add_composite_indexes_to_dataframe(df):
         df[f'Composite Index {goal}'] = df[metrics_for_goal].mean(axis=1)
     # then take the mean of all the goal composite indexes to get an overall composite index for each country each year
     goals_columns=[f'Composite Index {goal}' for goal in goals]
-    df['Overall Composite Index']=df[goals_columns].mean(axis=1)
+    df['Sustainable Composite Index']=df[goals_columns].mean(axis=1)
 
 def plot_composite_index_for_list_countries(df,countries,composite_index):
     '''
@@ -217,7 +217,8 @@ def plot_composite_index_for_list_countries(df,countries,composite_index):
         if list(countrydf[composite_index])[0]>0.3:
             sns.lineplot(country_metric(country,composite_index,df_filtered), x='Year',y=composite_index, label=country)
             plt.ylim(0.3,0.75)
-            plt.title('Overall Composite Index over time')
+            plt.title('Sustainable Composite Index over time')
+            plt.legend(loc='upper left')
             plt.xlim(2005,2022)
     plt.show()
 
@@ -231,14 +232,14 @@ def get_countries_with_biggest_changes(df):
     df_start=df[df['Year']==2005]
     df_end=df[df['Year']==2021]
     # change in composite index between 2005 and 2021
-    change=df_end['Overall Composite Index'].to_numpy()-df_start['Overall Composite Index'].to_numpy()
+    change=df_end['Sustainable Composite Index'].to_numpy()-df_start['Sustainable Composite Index'].to_numpy()
     # get 10 smallest and 10 biggest changes
-    max_indeces=np.argsort(change)[-10:]
-    min_indeces=np.argsort(change)[:10]
+    max_indexes=np.argsort(change)[-10:]
+    min_indexes=np.argsort(change)[:10]
     # find these countries and plot the composite index over time
     countries=np.array(list(dict.fromkeys(df['Country Name'].to_numpy())))
-    biggest_pos_change_countries=countries[max_indeces]
-    biggest_neg_change_countries=countries[min_indeces]
+    biggest_pos_change_countries=countries[max_indexes]
+    biggest_neg_change_countries=countries[min_indexes]
     return (biggest_pos_change_countries,biggest_neg_change_countries)
 def plot_goals_for_country(df,country,goals):
     '''
@@ -265,8 +266,8 @@ df=data.copy()
 normalise_columns(df,data)
 add_composite_indexes_to_dataframe(df)
 big_pos_change,big_neg_change=get_countries_with_biggest_changes(df)
-plot_composite_index_for_list_countries(df, big_pos_change, 'Overall Composite Index')
-plot_composite_index_for_list_countries(df, big_neg_change, 'Overall Composite Index')
+plot_composite_index_for_list_countries(df, big_pos_change, 'Sustainable Composite Index')
+plot_composite_index_for_list_countries(df, big_neg_change, 'Sustainable Composite Index')
 goals=['Goal10','Goal11','Goal13','Goal15','Goal16','Goal17']
 plot_goals_for_country(df,'Bolivia',goals)
 
