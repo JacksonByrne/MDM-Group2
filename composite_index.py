@@ -166,11 +166,12 @@ def normalise_columns(df, data):
     metrics=data.columns.values[3:]
     # create array of indexs showing if a metric is good to be low or high
     lower_values_good=[2,4,7,9,13,17,18,22,23,26,27,30,32,37,40,42,45,46,47,48,51,52,53,54,55,60,62,63,64,65,71,72]
-    years=np.linspace(2002,2023,23)
+    years=range(2002,2024)
     # loop through each metric
     for i,metric in enumerate(metrics):
         # loop through each year calculating normalised value for each country for metric and updating the dataframe
         for year in years:
+            print(year)
             year_values=(df[df['Year']==int(year)][metric])
             # get min and max values of metric
             min_value=np.min(year_values)
@@ -209,17 +210,13 @@ def plot_composite_index_for_list_countries(df,countries,composite_index):
     param composite_index: composite index column header, string
     '''
     for country in countries:
-        # ignore countries that have a low composite index value in 2002 due to lack of data 
-        countrydf=df[df['Country Name']==country]
-        countrydf=countrydf[countrydf['Year']==2002]
         # only plot data between these years
         df_filtered = df[(df['Year'] >= 2003) & (df['Year'] <= 2021)]
-        if country not in ['Monaco','San Marino']:
-            sns.lineplot(country_metric(country,composite_index,df_filtered), x='Year',y=composite_index, label=country)
-            plt.ylim(0.25,0.75)
-            plt.title('Sustainable Composite Index over time')
-            plt.legend(loc='upper left')
-            plt.xlim(2002,2022)
+        sns.lineplot(country_metric(country,composite_index,df_filtered), x='Year',y=composite_index, label=country)
+        plt.ylim(0.25,0.75)
+        plt.title('Sustainable Composite Index over time')
+        plt.legend(loc='upper left')
+        plt.xlim(2002,2022)
     plt.show()
 
 def get_countries_with_biggest_changes(df, df_composite_index):
@@ -229,11 +226,13 @@ def get_countries_with_biggest_changes(df, df_composite_index):
     param df: dataframe
     '''
     # get countries with biggest change between 2005 and 2021, this because there is less data near the edges so values aren't as accurate
-    df_start=df[df['Year']==2005]
-    df_end=df[df['Year']==2021]
+    start_year=2005
+    end_year=2021
+    df_start=df[df['Year']==start_year]
+    df_end=df[df['Year']==end_year]
     # change in composite index between 2005 and 2021
     change=df_end['Sustainable Composite Index'].to_numpy()-df_start['Sustainable Composite Index'].to_numpy()
-    slope=change/(2021-2005)
+    slope=change/(end_year-start_year)
     df_composite_index['Slope']=slope
     return df_composite_index
 def get_sustainability_composite_index_recent(df,df_composite_index):
