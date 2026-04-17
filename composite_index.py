@@ -175,8 +175,8 @@ def normalise_columns(df, data):
         for year in years:
             year_values=(df[df['Year']==int(year)][metric])
             # get min and max values of metric
-            min_value=np.min(year_values)
-            max_value=np.max(year_values)
+            min_value=np.nanmin(year_values)
+            max_value=np.nanmax(year_values)
             norm_score=(year_values-min_value)/(max_value-min_value)
             # if lower value is better change the normilisation score
             if i in lower_values_good:
@@ -241,6 +241,7 @@ def add_slope_of_composite_index(df, df_composite_index, composite_index):
         # for nan values remove data point form model
         df_filtered=df[df['Country Name']==country]
         nans=np.isnan(df_filtered[composite_index][4:-1].to_numpy())==False
+        # only find slope if there are values if not slope is nan
         if len(np.arange(2005,2022)[nans].reshape(-1,1))>0:
             slopes[i]=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[composite_index][4:-1].to_numpy()[nans].ravel())
         else:
@@ -270,10 +271,10 @@ def plot_slope_and_recent_index_for_list_countries(df,best_countries,composite_i
     '''
     # plot once for all of the not best countries
     df_without_best=df.drop(df[df['Country'].isin(best_countries)].index)
-    sns.scatterplot(df_without_best,x='Slope',y='Recent Mean Index', marker='x', color='0')
+    sns.scatterplot(df_without_best,x='Slope Normalised',y='Recent Mean Index', marker='x', color='0')
     # then plot the best countries with a legend to highlight them
     df_best=df[df['Country'].isin(best_countries)]
-    sns.scatterplot(df_best,x='Slope',y='Recent Mean Index', hue=df_best['Country'])
+    sns.scatterplot(df_best,x='Slope Normalised',y='Recent Mean Index', hue=df_best['Country'])
     plt.title(f'{goal_labels[composite_index[-6:].replace(" ","")]} over time ')
     plt.ylabel('Composite Index')
     plt.xlabel('Normalised slope of composite index over time')
@@ -286,10 +287,10 @@ def find_best_countries(df):
 
     param df: contains countries, slope and recent mean composite index, dataframe
     '''
-    min_slope=np.min(df['Slope'])
-    max_slope=np.max(df['Slope'])
-    df['Slope']=(df['Slope']-min_slope)/(max_slope-min_slope)
-    mean_value=(df['Slope'].to_numpy()+df['Recent Mean Index'].to_numpy())/2
+    min_slope=np.nanmin(df['Slope'])
+    max_slope=np.nanmax(df['Slope'])
+    df['Slope Normalised']=(df['Slope']-min_slope)/(max_slope-min_slope)
+    mean_value=(df['Slope Normalised'].to_numpy()+df['Recent Mean Index'].to_numpy())/2
     # ignore nan values and get highest values
     mean_value_without_nan=mean_value[np.isnan(mean_value)==False]
     max_indexes=np.where(np.isin(mean_value,mean_value_without_nan[np.argsort(mean_value_without_nan)[-10:]]))[0]
@@ -322,16 +323,22 @@ def plot_best_change_goals_for_country(df,country,goals):
     '''
     # only plot data between these years
     df_filtered = df[(df['Year']>2004) & (df['Year']<2022) & (df['Country Name']==country)]
-    change_goals=np.zeros(len(goals))
+    slope_goals=np.zeros(len(goals))
     # loop through each goal and fit a linear regression model and get the slope
     for i,goal in enumerate(goals):
+        # if only nan values then change
         nans=np.isnan(df_filtered[f'Composite Index {goal}'].to_numpy())==False
-        change_goals[i]=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[f'Composite Index {goal}'].to_numpy()[nans].ravel())
+        if len(np.arange(2005,2022)[nans].reshape(-1,1))>0:
+            slope_goals[i]=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[f'Composite Index {goal}'].to_numpy()[nans].ravel())
+        else:
+            slope_goals[i]=np.nan
     # get top 5 goals
-    max_indexes=np.argsort(change_goals)[-5:]
-    best_change_goals=np.array(goals)[max_indexes]
+    # ignore nan values and get highest values
+    slope_goals_without_nan=slope_goals[np.isnan(slope_goals)==False]
+    max_indexes=np.where(np.isin(slope_goals,slope_goals_without_nan[np.argsort(slope_goals_without_nan)[-5:]]))[0]
+    best_slope_goals=np.array(goals)[max_indexes]
     # loop through and plot the top 5 goals for change over time
-    for goal in best_change_goals:
+    for goal in best_slope_goals:
         plot_country_metric(country, f'Composite Index {goal}',df[df['Country Name']==country], goal_labels)
     plt.ylabel('Composite Index')
     plt.title(f'Goals for {country} over time')
@@ -363,9 +370,9 @@ add_composite_indexes_to_dataframe(df)
 find_best_countries_to_invest(df)
 goals=[f'Composite Index {goal}' for goal in goal_labels.keys()][:-1]
 # display plots of countries for all goals
-for goal in goals:
-    plot_index_for_countries(df, composite_index=goal)
-plot_best_change_goals_for_country(df,'China',list(goal_labels.keys())[:-1])
+#for goal in goals:
+    #plot_index_for_countries(df, composite_index=goal)
+plot_best_change_goals_for_country(df,'Albania',list(goal_labels.keys())[:-1])
 
 
 
