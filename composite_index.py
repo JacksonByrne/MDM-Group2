@@ -171,7 +171,6 @@ def normalise_columns(df, data):
     for i,metric in enumerate(metrics):
         # loop through each year calculating normalised value for each country for metric and updating the dataframe
         for year in years:
-            print(year)
             year_values=(df[df['Year']==int(year)][metric])
             # get min and max values of metric
             min_value=np.min(year_values)
@@ -234,7 +233,6 @@ def get_countries_with_biggest_changes(df, df_composite_index):
     change=df_end['Sustainable Composite Index'].to_numpy()-df_start['Sustainable Composite Index'].to_numpy()
     slope=change/(end_year-start_year)
     df_composite_index['Slope']=slope
-    return df_composite_index
 def get_sustainability_composite_index_recent(df,df_composite_index):
     '''
     calcualtes mean of the each countiries composite index between 2018 and 2021 and store in a new dataframe
@@ -246,25 +244,7 @@ def get_sustainability_composite_index_recent(df,df_composite_index):
     recent_indexes=np.array(df_recent['Sustainable Composite Index']).reshape(194,4)
     recent_mean_index=recent_indexes.mean(axis=1)
     df_composite_index['Recent Mean Index']=recent_mean_index
-    return df_composite_index
-def plot_goals_for_country(df,country,goals):
-    '''
-    plot specific composite indexes of goals for a country over time
 
-    param df: dataframe
-    param country: name of country, string
-    param goals, list of goals, list
-    '''
-    # only plot data between these years
-    df_filtered = df[(df['Year'] >= 2005) & (df['Year'] <= 2021)]
-    # loop through plot each composite index of goal
-    for goal in goals:
-        plot_country_metric(country, f'Composite Index {goal}',df_filtered, goal_labels)
-    plt.ylabel('Composite Index')
-    plt.title(f'Goals for {country} over time')
-    plt.legend(loc='upper left')
-    plt.xlim(2002,2022)
-    plt.show()
 def plot_slope_and_recent_index_for_list_countries(df,countries):
     '''
     plot slope and recent mean composite index for a list of countries
@@ -307,11 +287,44 @@ def find_best_countries_to_invest(df):
     # dataframe to store countries, recent mean composite index and slope of composite index, used to determine best countries
     df_composite_index=pd.DataFrame()
     df_composite_index['Country']=np.array(list(dict.fromkeys(df['Country Name'].to_numpy())))
-    df_composite_index=get_countries_with_biggest_changes(df, df_composite_index)
-    df_composite_index=get_sustainability_composite_index_recent(df, df_composite_index)
+    get_countries_with_biggest_changes(df, df_composite_index)
+    get_sustainability_composite_index_recent(df, df_composite_index)
     best_countries=find_best_countries(df_composite_index)
     plot_slope_and_recent_index_for_list_countries(df_composite_index,best_countries)
+    return df_composite_index
+def plot_best_change_goals_for_country(df,country,goals):
+    '''
+    plot the top 5 composite index goals with the biggest positive change over time
 
+    param df: dataframe
+    param country: name of country, string
+    param goals, list of goals, list
+    '''
+    # only plot data between these years
+    df_filtered = df[(df['Year'] >= 2005) & (df['Year'] <= 2021) & (df['Country Name']==country)]
+    start_year=2005
+    end_year=2021
+    change_goals=np.zeros(len(goals))
+    # loop through each goal and calculate change in goal from 2005 and 2021
+    for i,goal in enumerate(goals):
+        df_start=df_filtered[df_filtered['Year']==start_year]
+        df_end=df_filtered[df_filtered['Year']==end_year]
+        start_val=df_start.iloc[0][f'Composite Index {goal}']
+        end_val=df_end.iloc[0][f'Composite Index {goal}']
+        change_goals[i]=(end_val-start_val)
+    # ignore nan values where missing data for goal
+    change_goals[np.isnan(change_goals)]=-10
+    # get top 5 goals
+    max_indexes=np.argsort(change_goals)[-5:]
+    best_change_goals=np.array(goals)[max_indexes]
+    # loop through and plot the top 5 goals for change over time
+    for goal in best_change_goals:
+        plot_country_metric(country, f'Composite Index {goal}',df_filtered, goal_labels)
+    plt.ylabel('Composite Index')
+    plt.title(f'Goals for {country} over time')
+    plt.legend(loc='upper left')
+    plt.xlim(2002,2022)
+    plt.show()
 # read data set
 data=pd.read_csv('new_WorldSustainabilityDataset.csv')
 # copy dataframe to keep imported dataframe
@@ -319,15 +332,8 @@ df=data.copy()
 normalise_columns(df,data)
 add_composite_indexes_to_dataframe(df)
 find_best_countries_to_invest(df)
+plot_best_change_goals_for_country(df,'India',list(goal_labels.keys()))
 plt.show()
-
-'''
-plot_composite_index_for_list_countries(df, big_pos_change, 'Sustainable Composite Index')
-plot_composite_index_for_list_countries(df, big_neg_change, 'Sustainable Composite Index')
-goals=['Goal10','Goal11','Goal13','Goal15','Goal16','Goal17']
-plot_goals_for_country(df,'Uzbekistan',goals)
-'''
-
 
 
 def country_goal_data(country, goal, df):
