@@ -156,7 +156,6 @@ metrics_lower_values_good=["Poverty headcount ratio at $1.90 a day (2011 PPP) (%
     "Proportion of people living below 50 percent of median income (%) [SI.DST.50MD]",
     "GINI index (World Bank estimate)",
     "Poverty gap at $1.90 a day (2011 PPP) (%)",
-    "Urban population growth (annual %) [SP.URB.GROW]",
     "Population living in slums (% of urban population) [EN.POP.SLUM.UR.ZS]",
     "Mortality caused by road traffic injury (per 100,000 people) [SH.STA.TRAF.P5]",
     "Carbon dioxide (CO2) emissions (total) excluding LULUCF (Mt CO2e)",
@@ -296,14 +295,14 @@ def add_slope_of_composite_index(df, df_composite_index, composite_index):
     return df_composite_index
 def add_composite_index_recent(df,df_composite_index, composite_index):
     '''
-    calcualtes mean of the each countries composite index between 2018 and 2021 and store in a new dataframe
+    calcualtes mean of the each countries composite index between 2017 and 2021 and store in a new dataframe
 
     param df: dataframe
     param df_composite_index: new dataframe
     param composite index: goal index or overall index string
     '''
-    df_recent=df[df['Year'].between(2018,2021)]
-    recent_indexes=np.array(df_recent[composite_index]).reshape(194,4)
+    df_recent=df[df['Year'].between(2017,2022)]
+    recent_indexes=np.array(df_recent[composite_index]).reshape(193,6)
     recent_mean_index=recent_indexes.mean(axis=1)
     df_composite_index['Recent Mean Index']=pd.Series(recent_mean_index)
     return df_composite_index
@@ -324,7 +323,7 @@ def plot_slope_and_recent_index_for_list_countries(df,best_countries,composite_i
     plt.title(f'{goal_labels[composite_index[-6:].replace(" ","")]} over time ')
     plt.ylabel('Recent Composite Index')
     plt.xlabel('Slope of composite index over time')
-    plt.legend(loc='upper left')
+    plt.legend(loc='lower left')
     plt.show()
 def find_best_countries(df):
     '''
@@ -336,7 +335,8 @@ def find_best_countries(df):
     min_slope=np.nanmin(df['Slope'])
     max_slope=np.nanmax(df['Slope'])
     df['Slope Normalised']=(df['Slope']-min_slope)/(max_slope-min_slope)
-    mean_value=(df['Slope Normalised'].to_numpy()+df['Recent Mean Index'].to_numpy())/2
+    # favour a good recent mean composite index overall slighty, weight by 1.25
+    mean_value=(df['Slope Normalised'].to_numpy()+df['Recent Mean Index'].to_numpy()*1.25)/2
     # ignore nan values and get highest values
     mean_value_without_nan=mean_value[np.isnan(mean_value)==False]
     max_indexes=np.where(np.isin(mean_value,mean_value_without_nan[np.argsort(mean_value_without_nan)[-10:]]))[0]
@@ -376,7 +376,7 @@ def plot_best_change_goals_for_country(df,country,goals):
     for i,goal in enumerate(goals):
         # if only nan values then change
         nans=np.isnan(df_filtered[f'Composite Index {goal}'].to_numpy())==False
-        if len(np.arange(2005,2022)[nans].reshape(-1,1))>0:
+        if len(np.arange(2005,2022)[nans].reshape(-1,1))>5:
             slope_goals[i],intercept=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[f'Composite Index {goal}'].to_numpy()[nans].ravel())
         else:
             slope_goals[i]=np.nan
@@ -418,8 +418,8 @@ add_composite_indexes_to_dataframe(df)
 find_best_countries_to_invest(df)
 goals=[f'Composite Index {goal}' for goal in goal_labels.keys()][:-1]
 # display plots of countries for all goals
-for goal in goals:
-    plot_index_for_countries(df, composite_index=goal)
+#for goal in goals:
+    #plot_index_for_countries(df, composite_index=goal)
 
 plot_best_change_goals_for_country(df,'China',list(goal_labels.keys())[:-1])
 
