@@ -30,62 +30,63 @@ goal_metrics_labels = {
     # No Poverty
     "Goal1":  ["Poverty headcount ratio at $1.90 a day (2011 PPP) (% of population)",
     "Poverty gap at $5.50 a day (2011 PPP) (% of population)",
-    "Poverty headcount ratio at national poverty lines (% of population)",
+    "Poverty headcount ratio at societal poverty line (% of population) [SI.POV.SOPO]",
     "Adequacy of social protection and labor programs (% of total welfare of beneficiary households)",
     "Poverty gap at $1.90 a day (2011 PPP) (%)"
     ],
     # Zero Hunger 
     "Goal2":  ["Prevalence of undernourishment (% of population)",
-    "Cereal yield (kg per hectare)",
-    "Prevalence of stunting, height for age (% of children under 5)",
-    "Agricultural land (% of land area)",
+    "Prevalence of moderate or severe food insecurity in the population (%) [SN.ITK.MSFI.ZS]",
+    "Prevalence of stunting, height for age (modeled estimate, % of children under 5) [SH.STA.STNT.ME.ZS]",
+    "Crop production index (2004-2006 = 100) [AG.PRD.CROP.XD]",
     "Food production index (2004-2006 = 100)"
     ],
     # Good Health
     "Goal3":  ["Mortality rate, under-5 (per 1,000 live births)",
     "Life expectancy at birth, total (years)",
-    "Maternal mortality ratio (modeled estimate, per 100,000 live births)",
+    "Lifetime risk of maternal death (%) [SH.MMR.RISK.ZS]",
     "Incidence of tuberculosis (per 100,000 people)",
     "Current health expenditure (% of GDP)"
     ],
     # Quality Education 
-    "Goal4":  ["School enrollment, primary (% gross)",
-    "Literacy rate, adult total (% of people ages 15 and above)",
-    "Children out of school (% of primary school age)",
+    "Goal4":  ["School enrollment, primary (gross), gender parity index (GPI) [SE.ENR.PRIM.FM.ZS]",
+    "Progression to secondary school (%) [SE.SEC.PROG.ZS]",
+    "Net intake rate in grade 1 (% of official school-age population) [SE.PRM.NINT.ZS]",
     "Government expenditure on education, total (% of GDP) [SE.XPD.TOTL.GD.ZS]",
-    "Compulsory education, duration (years)"
+    "Pupil-teacher ratio, primary [SE.PRM.ENRL.TC.ZS]"
+    
     ],
     # Gender equality 
     "Goal5":  ["Proportion of seats held by women in national parliaments (%)",
     "Ratio of female to male labor force participation rate (%) (modeled ILO estimate)",
-    "Women who were first married by age 18 (% of women ages 20-24)",
-    "Proportion of women subjected to physical and/or sexual violence in the last 12 months (% of women age 15-49)",
-    "School enrollment, primary (% gross)"
+    "Women Business and the Law Index Score (scale 1-100) [SG.LAW.INDX]",
+    "Unemployment, female (% of female labor force) (modeled ILO estimate) [SL.UEM.TOTL.FE.ZS]",
+    "Employment to population ratio, 15+, female (%) (modeled ILO estimate) [SL.EMP.TOTL.SP.FE.ZS]"
     ],
     # Clean water
     "Goal6":  ["People using basic drinking water services (% of population)",
     "People using basic sanitation services (% of population)",
-    "Annual freshwater withdrawals, total (% of internal resources)",
+    "People using safely managed drinking water services (% of population) [SH.H2O.SMDW.ZS]",
     "People practicing open defecation (% of population)",
-    "Water pollution, food industry (% of total BOD emissions) [EE.BOD.FOOD.ZS]"
+    "People with basic handwashing facilities including soap and water (% of populartion) [SH.STA.HYGN.ZS]"
     ],
     # Clean Energy
     "Goal7":  ["Access to electricity (% of population)",
     "Renewable energy consumption (% of total final energy consumption)",
     "Energy intensity level of primary energy (MJ/$2011 PPP GDP)",
-    "Carbon dioxide (CO2) emissions from Power Industry (Energy) (Mt CO2e)",
-    "Access to clean fuels and technologies for cooking  (% of population)"
+    "Adjusted savings: energy depletion (% of GNI) [NY.ADJ.DNGY.GN.ZS]",
+    "Carbon dioxide (CO2) emissions from Power Industry (Energy) (Mt CO2e)"
     ],
     # Decent Work and Economic Growth
     "Goal8":  ["GDP growth (annual %)",
     "Unemployment, total (% of total labor force) (modeled ILO estimate)",
     "GDP per person employed (constant 2011 PPP $)",
-    "Children in employment, total (% of children ages 7-14)",
+    "Vulnerable employment, total (% of total employment) [SL.EMP.VULN.ZS]",
     "Labor force participation rate, total (% of total population ages 15-64) (modeled ILO estimate)"
     ],
     # Industry,Innovation and Infrastructure
     "Goal9":  ["Fixed broadband subscriptions (per 100 people)",
-    "Research and development expenditure (% of GDP)",
+    "High-technology exports (% of manufactured exports) [TX.VAL.TECH.MF.ZS]",
     "Manufacturing, value added (% of GDP)",
     "Logistics performance index: Overall (1=low to 5=high)",
     "Patent applications, residents"
@@ -93,26 +94,30 @@ goal_metrics_labels = {
     # Requced Inequalities 
     "Goal10": ["GINI index (World Bank estimate)",
     "Income share held by lowest 20%",
-    "Poverty gap at $1.90 a day (2011 PPP) (%)"
+    "Income share held by highest 20% [SI.DST.05TH.20]",
+    "Poverty gap at $1.90 a day (2011 PPP) (%)",
+    "Proportion of people living below 50 percent of median income (%) [SI.DST.50MD]"
     ],
     # Sustainable cities
     "Goal11":["PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
     "People using safely managed drinking water services, urban (% of urban population)",
-    "Disaster risk reduction progress score (1-5 scale; 5=best)"
+    "Urban population growth (annual %) [SP.URB.GROW]",
+    "Population living in slums (% of urban population) [EN.POP.SLUM.UR.ZS]",
+    "Mortality caused by road traffic injury (per 100,000 people) [SH.STA.TRAF.P5]"
     ],
     # Climate Action 
-    "Goal13": ["Carbon dioxide (CO2) emissions (total) excluding LULUCF (Mt CO2e)",
+    "Goal13": ["Adjusted savings: net forest depletion (% of GNI) [NY.ADJ.DFOR.GN.ZS]",
     "Carbon dioxide (CO2) emissions excluding LULUCF per capita (t CO2e/capita)",
     "Adjusted savings: carbon dioxide damage (% of GNI)",
     "Carbon intensity of GDP (kg CO2e per constant 2015 US$ of GDP)",
-    "Total greenhouse gas emissions (kt of CO2 equivalent) [EN.ATM.GHGT.KT.CE]"
+    "Total greenhouse gas emissions excluding LULUCF per capita (t CO2e/capita) [EN.GHG.ALL.PC.CE.AR5]"
     ],
     # Life on Land
     "Goal15":["Forest area (% of land area)",
     "Terrestrial and marine protected areas (% of total territorial area)",
-    "Bird species, threatened",
+    "Terrestrial protected areas (% of total land area) [ER.LND.PTLD.ZS]",
     "Mammal species, threatened",
-    "Adjusted savings: net forest depletion (% of GNI)"
+    "Adjusted savings: net forest depletion (% of GNI) [NY.ADJ.DFOR.GN.ZS]"
     ],
     # peace, justice
     "Goal16":["Battle-related deaths (number of people)",
@@ -122,13 +127,52 @@ goal_metrics_labels = {
     "Control of Corruption: Estimate"
     ],
     # paternships for goals 
-    'Goal17':["Net official development assistance received (current US$)",
+    'Goal17':["Individuals using the Internet (% of population) [IT.NET.USER.ZS]",
     "Tariff rate, applied, simple mean, all products (%)",
-    "Foreign direct investment, net inflows (% of GDP)",
     "Personal remittances, received (% of GDP)",
-    "Net official development assistance and official aid received (current US$) [DT.ODA.ALLD.CD]"
+    "Tax revenue (% of GDP) [GC.TAX.TOTL.GD.ZS]",
+    "Debt service (PPG and IMF only, % of exports of goods, services and primary income) [DT.TDS.DPPF.XP.ZS]"
     ],
 }
+metrics_lower_values_good=["Poverty headcount ratio at $1.90 a day (2011 PPP) (% of population)",
+    "Poverty gap at $5.50 a day (2011 PPP) (% of population)",
+    "Poverty headcount ratio at societal poverty line (% of population) [SI.POV.SOPO]",
+    "Poverty gap at $1.90 a day (2011 PPP) (%)",
+    "Prevalence of undernourishment (% of population)",
+    "Prevalence of stunting, height for age (modeled estimate, % of children under 5) [SH.STA.STNT.ME.ZS]",
+    "Prevalence of moderate or severe food insecurity in the population (%) [SN.ITK.MSFI.ZS]",
+    "Mortality rate, under-5 (per 1,000 live births)",
+    "Lifetime risk of maternal death (%) [SH.MMR.RISK.ZS]",
+    "Incidence of tuberculosis (per 100,000 people)",
+    "Pupil-teacher ratio, primary [SE.PRM.ENRL.TC.ZS]",
+    "Unemployment, female (% of female labor force) (modeled ILO estimate) [SL.UEM.TOTL.FE.ZS]",
+    "Adjusted savings: energy depletion (% of GNI) [NY.ADJ.DNGY.GN.ZS]",
+    "People practicing open defecation (% of population)",
+    "Energy intensity level of primary energy (MJ/$2011 PPP GDP)",
+    "Carbon dioxide (CO2) emissions from Power Industry (Energy) (Mt CO2e)",
+    "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+    "Vulnerable employment, total (% of total employment) [SL.EMP.VULN.ZS]",
+    "Income share held by highest 20% [SI.DST.05TH.20]",
+    "Proportion of people living below 50 percent of median income (%) [SI.DST.50MD]",
+    "GINI index (World Bank estimate)",
+    "Poverty gap at $1.90 a day (2011 PPP) (%)",
+    "Urban population growth (annual %) [SP.URB.GROW]",
+    "Population living in slums (% of urban population) [EN.POP.SLUM.UR.ZS]",
+    "Mortality caused by road traffic injury (per 100,000 people) [SH.STA.TRAF.P5]",
+    "Carbon dioxide (CO2) emissions (total) excluding LULUCF (Mt CO2e)",
+    "Carbon dioxide (CO2) emissions excluding LULUCF per capita (t CO2e/capita)",
+    "Adjusted savings: carbon dioxide damage (% of GNI)",
+    "Carbon intensity of GDP (kg CO2e per constant 2015 US$ of GDP)",
+    "Total greenhouse gas emissions excluding LULUCF per capita (t CO2e/capita) [EN.GHG.ALL.PC.CE.AR5]",
+    "Terrestrial protected areas (% of total land area) [ER.LND.PTLD.ZS]",
+    "PM2.5 air pollution, mean annual exposure (micrograms per cubic meter)",
+    "Mammal species, threatened",
+    "Adjusted savings: net forest depletion (% of GNI) [NY.ADJ.DFOR.GN.ZS]",
+    "Battle-related deaths (number of people)",
+    "Intentional homicides (per 100,000 people)",
+    "Tariff rate, applied, simple mean, all products (%)",
+    "Debt service (PPG and IMF only, % of exports of goods, services and primary income) [DT.TDS.DPPF.XP.ZS]"
+    ]
 def country_metric(country, metric,df):
     '''
     Returns the column of metric for the specific country
@@ -167,10 +211,9 @@ def normalise_columns(df, data):
     # add list of metrics here only ones with numerical values, that can be normalised
     metrics=data.columns.values[3:]
     # create array of indexs showing if a metric is good to be low or high
-    lower_values_good=[2,4,7,9,13,17,18,22,23,26,27,30,32,37,40,42,45,46,47,48,51,52,53,54,55,60,62,63,64,65,71,72]
     years=range(2002,2024)
     # loop through each metric
-    for i,metric in enumerate(metrics):
+    for metric in metrics:
         # loop through each year calculating normalised value for each country for metric and updating the dataframe
         for year in years:
             year_values=(df[df['Year']==int(year)][metric])
@@ -179,7 +222,7 @@ def normalise_columns(df, data):
             max_value=np.nanmax(year_values)
             norm_score=(year_values-min_value)/(max_value-min_value)
             # if lower value is better change the normilisation score
-            if i in lower_values_good:
+            if metric in metrics_lower_values_good:
                 norm_score=1-norm_score
             # update dataframe with normalised value
             new_df=pd.DataFrame({metric:norm_score})
@@ -214,7 +257,7 @@ def plot_composite_index_for_list_countries(df,countries,composite_index):
         # only plot data between these years
         df_filtered = df[(df['Year'] >= 2003) & (df['Year'] <= 2021)]
         sns.lineplot(country_metric(country,composite_index,df_filtered), x='Year',y=composite_index, label=country)
-        plt.ylim(0.25,0.75)
+        #plt.ylim(0.25,0.75)
         plt.title('Sustainable Composite Index over time')
         plt.legend(loc='upper left')
         plt.xlim(2002,2022)
@@ -225,7 +268,7 @@ def fit_linear_regmodel(years,composite_indexes):
     '''
     lr = LinearRegression()
     lr.fit(years,composite_indexes)
-    return lr.coef_[0]
+    return lr.coef_[0],lr.intercept_
 def add_slope_of_composite_index(df, df_composite_index, composite_index):
     '''
     gets countries with the biggest positive and negatives changes in the overall composite index between 2005 and 2022
@@ -238,12 +281,15 @@ def add_slope_of_composite_index(df, df_composite_index, composite_index):
     list_countries=np.array(list(dict.fromkeys(df['Country Name'].to_numpy())))
     slopes=np.zeros(len(list_countries))
     for i,country in enumerate(list_countries):
+        
         # for nan values remove data point form model
         df_filtered=df[df['Country Name']==country]
+        
+        # get only in specified years
         nans=np.isnan(df_filtered[composite_index][4:-1].to_numpy())==False
-        # only find slope if there are values if not slope is nan
+        # only find slope if there are values if not slope is nan, maybe add only if there if certain amount of data as well
         if len(np.arange(2005,2022)[nans].reshape(-1,1))>0:
-            slopes[i]=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[composite_index][4:-1].to_numpy()[nans].ravel())
+            slopes[i],intercept=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[composite_index][4:-1].to_numpy()[nans].ravel())
         else:
             slopes[i]=np.nan
     df_composite_index['Slope']=pd.Series(slopes)
@@ -256,8 +302,8 @@ def add_composite_index_recent(df,df_composite_index, composite_index):
     param df_composite_index: new dataframe
     param composite index: goal index or overall index string
     '''
-    df_recent=df[df['Year'].between(2016,2021)]
-    recent_indexes=np.array(df_recent[composite_index]).reshape(194,6)
+    df_recent=df[df['Year'].between(2018,2021)]
+    recent_indexes=np.array(df_recent[composite_index]).reshape(194,4)
     recent_mean_index=recent_indexes.mean(axis=1)
     df_composite_index['Recent Mean Index']=pd.Series(recent_mean_index)
     return df_composite_index
@@ -271,13 +317,13 @@ def plot_slope_and_recent_index_for_list_countries(df,best_countries,composite_i
     '''
     # plot once for all of the not best countries
     df_without_best=df.drop(df[df['Country'].isin(best_countries)].index)
-    sns.scatterplot(df_without_best,x='Slope Normalised',y='Recent Mean Index', marker='x', color='0')
+    sns.scatterplot(df_without_best,x='Slope',y='Recent Mean Index', marker='x', color='0')
     # then plot the best countries with a legend to highlight them
     df_best=df[df['Country'].isin(best_countries)]
-    sns.scatterplot(df_best,x='Slope Normalised',y='Recent Mean Index', hue=df_best['Country'])
+    sns.scatterplot(df_best,x='Slope',y='Recent Mean Index', hue=df_best['Country'])
     plt.title(f'{goal_labels[composite_index[-6:].replace(" ","")]} over time ')
-    plt.ylabel('Composite Index')
-    plt.xlabel('Normalised slope of composite index over time')
+    plt.ylabel('Recent Composite Index')
+    plt.xlabel('Slope of composite index over time')
     plt.legend(loc='upper left')
     plt.show()
 def find_best_countries(df):
@@ -312,7 +358,9 @@ def find_best_countries_to_invest(df):
     df_composite_index=add_composite_index_recent(df, df_composite_index, composite_index='Sustainable Composite Index')
     best_countries=find_best_countries(df_composite_index)
     plot_slope_and_recent_index_for_list_countries(df_composite_index,best_countries,composite_index='Sustainable Composite Index')
+    
     return df_composite_index
+
 def plot_best_change_goals_for_country(df,country,goals):
     '''
     plot the top 5 composite index goals with the biggest positive change over time
@@ -329,7 +377,7 @@ def plot_best_change_goals_for_country(df,country,goals):
         # if only nan values then change
         nans=np.isnan(df_filtered[f'Composite Index {goal}'].to_numpy())==False
         if len(np.arange(2005,2022)[nans].reshape(-1,1))>0:
-            slope_goals[i]=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[f'Composite Index {goal}'].to_numpy()[nans].ravel())
+            slope_goals[i],intercept=fit_linear_regmodel(np.arange(2005,2022)[nans].reshape(-1,1), df_filtered[f'Composite Index {goal}'].to_numpy()[nans].ravel())
         else:
             slope_goals[i]=np.nan
     # get top 5 goals
@@ -340,7 +388,7 @@ def plot_best_change_goals_for_country(df,country,goals):
     # loop through and plot the top 5 goals for change over time
     for goal in best_slope_goals:
         plot_country_metric(country, f'Composite Index {goal}',df[df['Country Name']==country], goal_labels)
-    plt.ylabel('Composite Index')
+    plt.ylabel('Recent Composite Index')
     plt.title(f'Goals for {country} over time')
     plt.legend(loc='upper left')
     plt.xlim(2001,2024)
@@ -370,9 +418,10 @@ add_composite_indexes_to_dataframe(df)
 find_best_countries_to_invest(df)
 goals=[f'Composite Index {goal}' for goal in goal_labels.keys()][:-1]
 # display plots of countries for all goals
-#for goal in goals:
-    #plot_index_for_countries(df, composite_index=goal)
-plot_best_change_goals_for_country(df,'Albania',list(goal_labels.keys())[:-1])
+for goal in goals:
+    plot_index_for_countries(df, composite_index=goal)
+
+plot_best_change_goals_for_country(df,'China',list(goal_labels.keys())[:-1])
 
 
 
