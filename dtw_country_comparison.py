@@ -5,16 +5,16 @@ Use Dynamic Time Warping (DTW) to compare sustainability goal score
 trajectories across countries.
 
 For each Sustainable Development Goal (SDG) composite index, this script:
-  1. Builds the time series of the composite index for every country.
-  2. Aligns pairs of countries on the years they have in common.
-  3. Computes the DTW distance between each pair of countries.
-  4. Stores the pairwise DTW distance matrix per goal.
-  5. Provides helpers for:
+1. Builds the time series of the composite index for every country.
+2. Aligns pairs of countries on the years they have in common.
+3. Computes the DTW distance between each pair of countries.
+4. Stores the pairwise DTW distance matrix per goal.
+5. Provides helpers for:
         - Finding the most similar / most dissimilar countries to a
-          reference country for a given goal.
+        reference country for a given goal.
         - Plotting the aligned series for any pair of countries + goal.
         - Plotting the pairwise DTW distance matrix as a heatmap for a
-          selected subset of countries.
+        selected subset of countries.
 
 This file is self-contained: it loads the dataset directly and reuses the
 composite-index construction helpers from `composite_index.py`. It does not
@@ -148,8 +148,8 @@ def _available_countries_for_goal(goal, df=_df, min_points=5):
     metric = f'Composite Index {goal}'
     counts = (
         df.dropna(subset=[metric])
-          .groupby('Country Name')[metric]
-          .count()
+        .groupby('Country Name')[metric]
+        .count()
     )
     return counts[counts >= min_points].index.tolist()
 
@@ -199,7 +199,7 @@ def dtw_matrix_all_goals(countries, goals=None, df=_df):
 # Ranking helpers
 # --------------------------------------------------------------------------- #
 def most_similar_countries(reference_country, goal, df=_df, top_n=10,
-                           candidates=None):
+                        candidates=None):
     """
     For a given reference country and goal, return the `top_n` countries whose
     composite index trajectory is most similar (smallest DTW distance).
@@ -213,7 +213,7 @@ def most_similar_countries(reference_country, goal, df=_df, top_n=10,
             continue
         try:
             dist, years, _, _ = dtw_between_countries(reference_country, other,
-                                                      goal, df=df)
+                                                    goal)
             if len(years) == 0 or not np.isfinite(dist):
                 continue
             results.append((other, dist, len(years)))
@@ -221,13 +221,13 @@ def most_similar_countries(reference_country, goal, df=_df, top_n=10,
             continue
 
     ranked = pd.DataFrame(results,
-                          columns=['Country', 'DTW_distance', 'n_years'])
+                        columns=['Country', 'DTW_distance', 'n_years'])
     ranked = ranked.sort_values('DTW_distance').reset_index(drop=True)
     return ranked.head(top_n)
 
 
 def most_dissimilar_countries(reference_country, goal, df=_df, top_n=10,
-                              candidates=None):
+                            candidates=None):
     """
     Same as `most_similar_countries` but returns the `top_n` countries whose
     trajectory is *most different* from the reference country.
@@ -239,7 +239,7 @@ def most_dissimilar_countries(reference_country, goal, df=_df, top_n=10,
                                     top_n=len(candidates),
                                     candidates=candidates)
     return ranked.sort_values('DTW_distance',
-                              ascending=False).head(top_n).reset_index(drop=True)
+                            ascending=False).head(top_n).reset_index(drop=True)
 
 
 # --------------------------------------------------------------------------- #
@@ -269,7 +269,7 @@ def plot_aligned_series(country1, country2, goal, df=_df, ax=None):
 
 
 def plot_dtw_heatmap(countries, goal, df=_df, cmap='viridis_r',
-                     annotate=False, ax=None):
+                    annotate=False, ax=None):
     """
     Plot the pairwise DTW distance matrix as a heatmap for the given
     countries and goal.
@@ -304,7 +304,7 @@ if __name__ == '__main__':
     # 1) Rank the sample countries by similarity to the reference country
     #    for each goal.
     print(f"\nMost similar countries to {reference} per goal "
-          f"(by DTW distance):\n")
+        f"(by DTW distance):\n")
     goals = [g for g in goal_labels.keys() if g != 'Index']
     for goal in goals:
         ranked = most_similar_countries(reference, goal,
