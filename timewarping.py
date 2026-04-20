@@ -229,13 +229,13 @@ def dtw_between_countries(country1, country2, goal):
     distance = dtw_distance(s, t)
     return distance, years, s, t
 
-
-
+goals = [[]]
+for goal in goals
 dist, years, one_vals, two_vals = dtw_between_countries(
-    "Argentina",
-    "United States",
-    "Goal5"
+    "Vietnam",
+    "China",
+    "Goal7"
     )
 
-print("DTW distance Goal5 (UK vs US):", dist)
+print("DTW distance:", dist)
 print("Aligned years:", years)
