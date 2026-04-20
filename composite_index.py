@@ -380,7 +380,7 @@ def find_best_countries(df):
     mean_value=(df['Slope Normalised'].to_numpy()+df['Recent Mean Index'].to_numpy()*1.5)/2
     # ignore nan values and get highest values
     mean_value_without_nan=mean_value[np.isnan(mean_value)==False]
-    max_indexes=np.where(np.isin(mean_value,mean_value_without_nan[np.argsort(mean_value_without_nan)[-12:]]))[0]
+    max_indexes=np.where(np.isin(mean_value,mean_value_without_nan[np.argsort(mean_value_without_nan)[-11:]]))[0]
     countries=np.array(list(dict.fromkeys(df['Country'].to_numpy())))
     best_countries=countries[max_indexes]
     return best_countries
@@ -424,15 +424,15 @@ def plot_best_change_goals_for_country(df,country,goals):
     # get top 5 goals
     # ignore nan values and get highest values
     slope_goals_without_nan=slope_goals[np.isnan(slope_goals)==False]
-    max_indexes=np.where(np.isin(slope_goals,slope_goals_without_nan[np.argsort(slope_goals_without_nan)[-5:]]))[0]
+    max_indexes=np.where(np.isin(slope_goals,slope_goals_without_nan[np.argsort(slope_goals_without_nan)[-7:]]))[0]
     best_slope_goals=np.array(goals)[max_indexes]
     # loop through and plot the top 5 goals for change over time
     df_filter=df[df['Year']<2023]
     for goal in best_slope_goals:
         plot_country_metric(country, f'Composite Index {goal}',df_filter[df_filter['Country Name']==country], goal_labels)
-    plt.ylabel('Recent Composite Index')
+    plt.ylabel('Composite Index')
     plt.title(f'Goals for {country} over time')
-    plt.legend(loc='upper left')
+    plt.legend(loc='lower right')
     plt.xlim(2001,2023)
     plt.show()
 def plot_index_for_countries(df, composite_index):
@@ -460,8 +460,8 @@ add_composite_indexes_to_dataframe(df)
 find_best_countries_to_invest(df)
 goals=[f'Composite Index {goal}' for goal in goal_labels.keys()][:-1]
 # display plots of countries for all goals
-for goal in goals:
-    plot_index_for_countries(df, composite_index=goal)
+#for goal in goals:
+    #plot_index_for_countries(df, composite_index=goal)
 plot_best_change_goals_for_country(df,'China',list(goal_labels.keys())[:-1])
 plot_best_change_goals_for_country(df,'Ireland',list(goal_labels.keys())[:-1])
 
