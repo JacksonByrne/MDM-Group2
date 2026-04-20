@@ -8,22 +8,23 @@ countries.
 How to run from VS Code
 -----------------------
 1. Install dependencies once (in the terminal VS Code opens):
-       pip install streamlit pandas numpy matplotlib seaborn scikit-learn
+    pip install streamlit pandas numpy matplotlib seaborn scikit-learn
 
 2. From the repo root, run:
-       streamlit run dtw_app.py
+    streamlit run dtw_app.py
 
-   VS Code will show a clickable http://localhost:8501 link in the terminal.
-   You can also use the "Run and Debug" panel with a Python config that
-   executes `streamlit run dtw_app.py`.
+VS Code will show a clickable http://localhost:8501 link in the terminal.
+You can also use the "Run and Debug" panel with a Python config that
+executes `streamlit run dtw_app.py`.
 
-The app has two tabs:
-  - "Single goal"  : pick a base country, comparison country, and one SDG
-                     goal; see aligned trajectories + DTW distance and an
-                     optional ranking of other countries.
-  - "All goals"    : pick two countries and see their DTW similarity across
-                     every SDG at once (bar chart, summary table, and small
-                     multiples of every goal's trajectories).
+The app lets you pick:
+- a base country
+- a comparison country
+- a goal (SDG composite index)
+
+and shows the aligned trajectories plus the DTW distance. An optional
+"DTW ranking" section lists the countries whose trajectory is most / least
+similar to the base country for the chosen goal.
 
 This file does not modify any existing code. It reuses helpers from
 `dtw_country_comparison.py`.
@@ -129,18 +130,20 @@ with tab_single:
             value=True, key="single_restrict",
         )
 
-    with col_right:
-        if base_country == comp_country:
-            st.warning("Base country and comparison country are the same — "
-                       "pick different countries to get a meaningful DTW "
-                       "distance.")
-        else:
-            try:
-                dist, years, s1, s2 = dtw_between_countries(
-                    base_country, comp_country, goal, df=df)
-            except Exception as e:
-                st.error(f"Could not compute DTW: {e}")
-                st.stop()
+
+# --------------------------------------------------------------------------- #
+# Main comparison
+# --------------------------------------------------------------------------- #
+if base_country == comp_country:
+    st.warning("Base country and comparison country are the same — pick "
+            "different countries to get a meaningful DTW distance.")
+else:
+    try:
+        dist, years, s1, s2 = dtw_between_countries(base_country, comp_country,
+                                                    goal, df=df)
+    except Exception as e:
+        st.error(f"Could not compute DTW: {e}")
+        st.stop()
 
             if len(years) == 0:
                 st.error(
@@ -152,7 +155,7 @@ with tab_single:
                 c1.metric("DTW distance", f"{dist:.3f}")
                 c2.metric("Common years", f"{len(years)}")
                 c3.metric("Year range",
-                          f"{int(years.min())}–{int(years.max())}")
+                        f"{int(years.min())}–{int(years.max())}")
 
                 fig, ax = plt.subplots(figsize=(9, 4))
                 plot_aligned_series(base_country, comp_country, goal,
@@ -179,19 +182,20 @@ with tab_single:
         else:
             candidates = all_countries
 
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.markdown("**Most similar (smallest DTW distance)**")
-            similar = most_similar_countries(base_country, goal, df=df,
-                                             top_n=top_n,
-                                             candidates=candidates)
-            st.dataframe(similar, use_container_width=True, hide_index=True)
-        with col_b:
-            st.markdown("**Most different (largest DTW distance)**")
-            different = most_dissimilar_countries(base_country, goal, df=df,
-                                                  top_n=top_n,
-                                                  candidates=candidates)
-            st.dataframe(different, use_container_width=True, hide_index=True)
+    col_a, col_b = st.columns(2)
+
+    with col_a:
+        st.markdown("**Most similar (smallest DTW distance)**")
+        similar = most_similar_countries(base_country, goal, df=df,
+                                        top_n=top_n, candidates=candidates)
+        st.dataframe(similar, use_container_width=True, hide_index=True)
+
+    with col_b:
+        st.markdown("**Most different (largest DTW distance)**")
+        different = most_dissimilar_countries(base_country, goal, df=df,
+                                            top_n=top_n,
+                                            candidates=candidates)
+        st.dataframe(different, use_container_width=True, hide_index=True)
 
 
 # =========================================================================== #
