@@ -122,9 +122,9 @@ with tab_single:
 
         st.markdown("**Ranking (optional)**")
         show_ranking = st.checkbox("Show DTW ranking vs base country",
-                                   value=True, key="single_show_rank")
+                                value=True, key="single_show_rank")
         top_n = st.slider("Top N", min_value=3, max_value=25, value=10,
-                          key="single_top_n")
+                        key="single_top_n")
         restrict_to_available = st.checkbox(
             "Restrict candidates to countries with enough data for this goal",
             value=True, key="single_restrict",
@@ -210,7 +210,7 @@ with tab_all:
 
     if base_country == comp_country:
         st.warning("Base country and comparison country are the same — pick "
-                   "different countries to compare.")
+                "different countries to compare.")
     else:
         metric_choice = st.radio(
             "Ranking metric",
@@ -264,7 +264,7 @@ with tab_all:
             fig, ax = plt.subplots(
                 figsize=(9, max(4, 0.45 * len(summary_valid))))
             plot_dtw_all_goals_bar(base_country, comp_country, df=df,
-                                   metric=metric_key, ax=ax)
+                                metric=metric_key, ax=ax)
             st.pyplot(fig, clear_figure=True)
 
             # Summary table
@@ -281,7 +281,7 @@ with tab_all:
 
             # Small multiples for every goal
             with st.expander("Show trajectory plots for every goal",
-                             expanded=False):
+                            expanded=False):
                 fig_all = plot_all_goals_trajectories(
                     base_country, comp_country, df=df, ncols=3)
                 st.pyplot(fig_all, clear_figure=True)
