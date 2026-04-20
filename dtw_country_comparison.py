@@ -1,8 +1,8 @@
 """
 dtw_country_comparison.py
 
-Use Dynamic Time Warping (DTW) to compare sustainability goal score trajectories
-across countries.
+Use Dynamic Time Warping (DTW) to compare sustainability goal score
+trajectories across countries.
 
 For each Sustainable Development Goal (SDG) composite index, this script:
   1. Builds the time series of the composite index for every country.
@@ -16,9 +16,9 @@ For each Sustainable Development Goal (SDG) composite index, this script:
         - Plotting the pairwise DTW distance matrix as a heatmap for a
           selected subset of countries.
 
-This file only *reads* from the existing project (processing_data.df,
-timewarping.dtw_between_countries, composite_index.goal_labels) and does not
-modify any of the existing code.
+This file is self-contained: it loads the dataset directly and reuses the
+composite-index construction helpers from `composite_index.py`. It does not
+import `processing_data` and does not modify any existing code.
 """
 
 import itertools
@@ -27,15 +27,118 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Reuse the cleaned, composite-indexed dataframe and the DTW helper that
-# already exist in the repo. These modules are not modified here.
-from processing_data import df as _df, country_goal_data
-from timewarping import dtw_between_countries
-from composite_index import goal_labels
+# Reuse the composite-index construction helpers and the goal labels from
+# composite_index.py. Importing this module also has side effects (it runs
+# some plots when executed as a script), but its helper functions are safe
+# to use once imported.
+from composite_index import (
+    goal_labels,
+    normalise_columns,
+    add_composite_indexes_to_dataframe,
+)
 
 
 # --------------------------------------------------------------------------- #
-# Core DTW utilities
+# Data loading
+# --------------------------------------------------------------------------- #
+def load_sustainability_df(csv_path='new_WorldSustainabilityDataset.csv'):
+    """
+    Load the world sustainability dataset and attach the composite indexes
+    needed for DTW comparison. This mirrors what `composite_index.py` does at
+    module load time, but without the plotting side effects.
+    """
+    data = pd.read_csv(csv_path)
+    df = data.copy()
+    normalise_columns(df, data)
+    add_composite_indexes_to_dataframe(df)
+    return df
+
+
+# Build the dataframe once at import time so the helpers below can use it
+# as a default.
+_df = load_sustainability_df()
+
+
+def country_goal_data(country, goal, df=_df):
+    """
+    Return a DataFrame with 'Year' and the composite index column for a
+    single country and goal.
+    """
+    metric = f'Composite Index {goal}'
+    country_df = df[df['Country Name'] == country]
+    return country_df[['Year', metric]]
+
+
+# --------------------------------------------------------------------------- #
+# DTW core
+# --------------------------------------------------------------------------- #
+def _dtw_distance(s, t, dist_func=None):
+    """
+    Classic dynamic time warping distance between two 1D numpy arrays.
+    """
+    if dist_func is None:
+        dist_func = lambda x, y: abs(x - y)
+
+    n, m = len(s), len(t)
+    if n == 0 or m == 0:
+        return np.nan
+
+    DTW = np.full((n + 1, m + 1), np.inf)
+    DTW[0, 0] = 0.0
+
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            cost = dist_func(s[i - 1], t[j - 1])
+            DTW[i, j] = cost + min(
+                DTW[i - 1, j],      # insertion
+                DTW[i, j - 1],      # deletion
+                DTW[i - 1, j - 1],  # match
+            )
+
+    return DTW[n, m]
+
+
+def _country_goal_series(country, goal, df=_df, drop_na=True):
+    sub = country_goal_data(country, goal, df).sort_values('Year')
+    if drop_na:
+        sub = sub.dropna()
+    years = sub['Year'].to_numpy()
+    values = sub[f'Composite Index {goal}'].to_numpy(dtype=float)
+    return years, values
+
+
+def _aligned_series(country1, country2, goal, df=_df):
+    years1, s1 = _country_goal_series(country1, goal, df)
+    years2, s2 = _country_goal_series(country2, goal, df)
+
+    common_years = np.intersect1d(years1, years2)
+    s1_aligned = s1[np.isin(years1, common_years)]
+    s2_aligned = s2[np.isin(years2, common_years)]
+
+    return common_years, s1_aligned, s2_aligned
+
+
+def dtw_between_countries(country1, country2, goal, df=_df):
+    """
+    DTW distance between the composite-index trajectories of two countries
+    for a given goal, aligned on the years they have in common.
+
+    Returns
+    -------
+    distance : float
+        DTW distance (NaN if no overlap).
+    years : np.ndarray
+        Common years used for the comparison.
+    s1, s2 : np.ndarray
+        The aligned series for `country1` and `country2`.
+    """
+    years, s, t = _aligned_series(country1, country2, goal, df)
+    distance = _dtw_distance(s, t)
+    return distance, years, s, t
+
+
+# --------------------------------------------------------------------------- #
+# Pairwise matrices
 # --------------------------------------------------------------------------- #
 def _available_countries_for_goal(goal, df=_df, min_points=5):
     """
@@ -56,15 +159,6 @@ def pairwise_dtw_matrix(countries, goal, df=_df):
     Compute the pairwise DTW distance matrix between `countries` for a single
     SDG composite index `goal` (e.g. "Goal7").
 
-    Parameters
-    ----------
-    countries : list[str]
-        Country names as they appear in the 'Country Name' column.
-    goal : str
-        Goal key like "Goal1", "Goal7", "Goal13" ...
-    df : pandas.DataFrame
-        Dataset containing the composite indexes (defaults to the project df).
-
     Returns
     -------
     pandas.DataFrame
@@ -77,7 +171,7 @@ def pairwise_dtw_matrix(countries, goal, df=_df):
     for i, j in itertools.combinations(range(n), 2):
         c1, c2 = countries[i], countries[j]
         try:
-            dist, years, _, _ = dtw_between_countries(c1, c2, goal)
+            dist, years, _, _ = dtw_between_countries(c1, c2, goal, df=df)
             if len(years) == 0 or not np.isfinite(dist):
                 continue
             dmat[i, j] = dist
@@ -119,7 +213,7 @@ def most_similar_countries(reference_country, goal, df=_df, top_n=10,
             continue
         try:
             dist, years, _, _ = dtw_between_countries(reference_country, other,
-                                                      goal)
+                                                      goal, df=df)
             if len(years) == 0 or not np.isfinite(dist):
                 continue
             results.append((other, dist, len(years)))
@@ -156,7 +250,7 @@ def plot_aligned_series(country1, country2, goal, df=_df, ax=None):
     Plot the aligned composite index series for two countries and annotate
     with the DTW distance.
     """
-    dist, years, s1, s2 = dtw_between_countries(country1, country2, goal)
+    dist, years, s1, s2 = dtw_between_countries(country1, country2, goal, df=df)
 
     if ax is None:
         fig, ax = plt.subplots(figsize=(8, 4))
