@@ -9,9 +9,13 @@ uses linear regression to estimate sustainability trajectory and rank countries
 
 factoranalysis final (2).ipynb-
 
-dtw_country_comparison.py-
+dtw_country_comparison.py- The baseline code before developing the dtw_app, uses composite index data and the new_WorldSustainabilityDataset and performs dynamic time warping.
+
+dtw_app.py- Uses streamlit and the code from country_comparison to create a local hosted web app where you can compare two countries across one or all goals, and download the images.
 
 DTW_plus_clustering_final.ipynb- Interprets the data and uses DTW on every pair of countries based on the sustainibility metrics followed by a clustering method. Grouping countries of similarity together.
+
+timewarping.py- Legacy code that used the original dataset, two countries a goal to produce a flat dtw distance averaged over all the years.
 
 
 Datasets
