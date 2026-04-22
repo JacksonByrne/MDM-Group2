@@ -184,6 +184,148 @@ def pairwise_dtw_matrix(countries, goal, df=_df):
     return pd.DataFrame(dmat, index=countries, columns=countries)
 
 
+def dtw_all_goals_between(country1, country2, df=_df, goals=None):
+    """
+    Compute the DTW distance between two countries for every goal.
+
+    Returns
+    -------
+    pandas.DataFrame
+        One row per goal with columns:
+          - Goal       : goal key (e.g. 'Goal7')
+          - Label      : human-readable goal name
+          - DTW        : DTW distance (NaN if no overlap)
+          - mean_abs   : mean absolute difference between the aligned series
+          - DTW_per_yr : DTW distance normalised by number of common years
+          - n_years    : number of common years available
+          - first_year : first common year
+          - last_year  : last common year
+    """
+    if goals is None:
+        goals = [g for g in goal_labels.keys() if g != 'Index']
+
+    rows = []
+    for goal in goals:
+        try:
+            dist, years, s1, s2 = dtw_between_countries(country1, country2,
+                                                        goal, df=df)
+        except Exception:
+            dist, years, s1, s2 = np.nan, np.array([]), np.array([]), np.array([])
+
+        n_years = len(years)
+        if n_years == 0 or not np.isfinite(dist):
+            rows.append({
+                'Goal': goal,
+                'Label': goal_labels.get(goal, goal),
+                'DTW': np.nan,
+                'mean_abs': np.nan,
+                'DTW_per_yr': np.nan,
+                'n_years': 0,
+                'first_year': np.nan,
+                'last_year': np.nan,
+            })
+            continue
+
+        rows.append({
+            'Goal': goal,
+            'Label': goal_labels.get(goal, goal),
+            'DTW': dist,
+            'mean_abs': float(np.mean(np.abs(s1 - s2))),
+            'DTW_per_yr': dist / n_years,
+            'n_years': n_years,
+            'first_year': int(years.min()),
+            'last_year': int(years.max()),
+        })
+
+    return pd.DataFrame(rows)
+
+
+def plot_dtw_all_goals_bar(country1, country2, df=_df, goals=None,
+                           metric='DTW_per_yr', ax=None):
+    """
+    Bar chart of the per-goal DTW distance between two countries.
+
+    `metric` can be 'DTW', 'DTW_per_yr', or 'mean_abs'.
+    """
+    summary = dtw_all_goals_between(country1, country2, df=df,
+                                    goals=goals).dropna(subset=[metric])
+    summary = summary.sort_values(metric, ascending=True)
+
+    if ax is None:
+        fig, ax = plt.subplots(figsize=(9, max(4, 0.4 * len(summary))))
+
+    labels = [f"{g} \u2014 {lbl}" for g, lbl in
+              zip(summary['Goal'], summary['Label'])]
+    ax.barh(labels, summary[metric], color='steelblue')
+    ax.set_xlabel({
+        'DTW': 'DTW distance',
+        'DTW_per_yr': 'DTW distance per common year',
+        'mean_abs': 'Mean absolute difference',
+    }.get(metric, metric))
+    ax.set_title(f'{country1} vs {country2} \u2014 similarity across SDGs '
+                 f'(lower = more similar)')
+    ax.grid(True, axis='x', alpha=0.3)
+    return summary
+
+
+def plot_all_goals_trajectories(country1, country2, df=_df, goals=None,
+                                ncols=3):
+    """
+    Small-multiples plot: one subplot per goal showing the two countries'
+    composite-index trajectories for that goal.
+
+    Returns the matplotlib Figure.
+    """
+    if goals is None:
+        goals = [g for g in goal_labels.keys() if g != 'Index']
+
+    nrows = int(np.ceil(len(goals) / ncols))
+    fig, axes = plt.subplots(nrows, ncols,
+                             figsize=(4.5 * ncols, 3.0 * nrows),
+                             sharex=False)
+    axes = np.array(axes).reshape(-1)
+
+    for ax, goal in zip(axes, goals):
+        try:
+            dist, years, s1, s2 = dtw_between_countries(country1, country2,
+                                                        goal, df=df)
+        except Exception:
+            dist, years, s1, s2 = np.nan, np.array([]), np.array([]), np.array([])
+
+        if len(years) == 0:
+            ax.set_title(f"{goal} \u2014 no overlap", fontsize=10)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            continue
+
+        ax.plot(years, s1, marker='o', markersize=3, label=country1)
+        ax.plot(years, s2, marker='s', markersize=3, label=country2)
+        ax.set_title(f"{goal} \u2014 {goal_labels.get(goal, goal)}\n"
+                     f"DTW={dist:.2f}", fontsize=9)
+        ax.grid(True, alpha=0.3)
+        ax.tick_params(labelsize=8)
+
+    # Hide any unused subplots.
+    for ax in axes[len(goals):]:
+        ax.axis('off')
+
+    # Single shared legend using the first populated axis.
+    handles, labels = [], []
+    for ax in axes:
+        h, l = ax.get_legend_handles_labels()
+        if h:
+            handles, labels = h, l
+            break
+    if handles:
+        fig.legend(handles, labels, loc='upper center',
+                   bbox_to_anchor=(0.5, 1.02), ncol=2)
+
+    fig.suptitle(f'{country1} vs {country2} \u2014 all SDG trajectories',
+                 y=1.04, fontsize=12)
+    fig.tight_layout()
+    return fig
+
+
 def dtw_matrix_all_goals(countries, goals=None, df=_df):
     """
     Compute pairwise DTW distance matrices for every goal in `goals` and
