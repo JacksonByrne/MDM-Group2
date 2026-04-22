@@ -5,7 +5,7 @@ based on their sustainability trajectories.
   
 Files 
 composite_index.py- creates a sustainable composite index by normalising metrics and weight mean, 
-finds slope of index to then find best countries to invest based on the sustainability trajectory
+uses linear regression to estimate sustainability trajectory and rank countries 
 
 factoranalysis final (2).ipynb-
 
@@ -23,5 +23,5 @@ development goals, used for composite_index.py
 archive/WorldSustainabilityDataset.csv — dataset from kaggle used in factor analysis 
 
 Dependencies, libraries used 
-numpy, sklearn, pandas, seaborn, matplotlib, streamlit, itertools, scipy, os, factor_analyzer
+numpy, sklearn, pandas, seaborn, matplotlib, streamlit, scipy, factor_analyzer
  
