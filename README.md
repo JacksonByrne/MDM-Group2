@@ -1,7 +1,7 @@
 MDM2-Group17 World Sustainability Dataset
 Description
 This project analyses the world countries and finds the best investment opportunities to invest in 
-based on their sustainability trajectories. 
+based on their sustainability trajectories. All code is done in Python.
   
 Files 
 composite_index.py- creates a sustainable composite index by normalising metrics and weight mean, 
