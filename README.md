@@ -7,7 +7,7 @@ Files
 composite_index.py- creates a sustainable composite index by normalising metrics and weight mean, 
 uses linear regression to estimate sustainability trajectory and rank countries 
 
-factoranalysis final (2).ipynb-
+factoranalysis final (2).ipynb- runs a full factor analysis by screening metrics, choosing appropriate number of factors, producing investment leaderboard ranking countries using weighted score of current position and trajectory using the chosen factors. 
 
 dtw_country_comparison.py- The baseline code before developing the dtw_app, uses composite index data and the new_WorldSustainabilityDataset and performs dynamic time warping.
 
