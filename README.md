@@ -11,7 +11,7 @@ factoranalysis final (2).ipynb-
 
 dtw_country_comparison.py-
 
-DTW_plus_clustering_final.ipynb-
+DTW_plus_clustering_final.ipynb- Interprets the data and uses DTW on every pair of countries based on the sustainibility metrics followed by a clustering method. Grouping countries of similarity together.
 
 
 Datasets
