@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import processing_data
-from processing_data import df, country_goal_data, goal_metric_data
+import composite_index
+from composite_index import df, country_goal_data, goal_metric_data
 
 df=df
 cleandf = df.dropna(subset=['Composite Index Goal1'])
@@ -230,12 +230,12 @@ def dtw_between_countries(country1, country2, goal):
     return distance, years, s, t
 
 goals = [[]]
-for goal in goals
-dist, years, one_vals, two_vals = dtw_between_countries(
-    "Vietnam",
-    "China",
-    "Goal7"
-    )
+for goal in goals:
+    dist, years, one_vals, two_vals = dtw_between_countries(
+        "Vietnam",
+        "China",
+        "Goal7"
+        )
 
 print("DTW distance:", dist)
 print("Aligned years:", years)
